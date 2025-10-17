@@ -17,12 +17,17 @@ trap 'echo "backup.sh: stopping after current iteration"; STOP=1' TERM INT
 upload_file() {
   src="$1"
   base=$(basename "$src")
+  # Remove timestamp from base name for latest path
+  base_no_timestamp=$(echo "$base" | sed -E 's/-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}Z//')
+
+  # Upload to timestamped folder
   dest="${RCLONE_REMOTE}:${BUCKET_NAME}/${BACKUP_PREFIX}/${TIMESTAMP}/${base}"
   echo "backup.sh: uploading ${src} -> ${dest}"
   rclone copyto "$src" "$dest" || echo "backup.sh: warning: failed to upload ${src}"
 
-  # also update latest
-  latest="${RCLONE_REMOTE}:${BUCKET_NAME}/${BACKUP_PREFIX}/latest/${base}"
+  # Update latest with non-timestamped name and force overwrite
+  latest="${RCLONE_REMOTE}:${BUCKET_NAME}/${BACKUP_PREFIX}/latest/${base_no_timestamp}"
+  echo "backup.sh: updating latest ${src} -> ${latest}"
   rclone copyto "$src" "$latest" || echo "backup.sh: warning: failed to update latest pointer"
 }
 

@@ -20,8 +20,8 @@ BUCKET_NAME="${BACKUP_BUCKET:-your-n8n-backups}"
 BACKUP_PREFIX="${BACKUP_PREFIX:-n8n-backups}"
 
 REMOTE_BASE="${RCLONE_REMOTE}:${BUCKET_NAME}/${BACKUP_PREFIX}"
-WORKF_PATH="workflows.json"
-CRED_PATH="encrypted_credentials.json"   # keep consistent with your export naming
+WORKF_PATH="latest/workflows.json"
+CRED_PATH="latest/credentials.json"   # keep consistent with your export naming
 
 echo "entrypoint.sh: looking for latest backups at ${REMOTE_BASE} ..."
 

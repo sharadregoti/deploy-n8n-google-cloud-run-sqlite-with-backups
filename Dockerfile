@@ -1,5 +1,5 @@
 # TODO change docker tag to 1.115.3 after testing
-FROM n8nio/n8n:latest
+FROM n8nio/n8n:1.115.3
 
 # Install node deps for the backup script (small helper)
 USER root

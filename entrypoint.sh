@@ -15,6 +15,24 @@ if [ -n "${GOOGLE_APPLICATION_CREDENTIALS:-}" ] && [ -f "${GOOGLE_APPLICATION_CR
   rclone config create "${RCLONE_REMOTE}" gcs service_account_file "${GOOGLE_APPLICATION_CREDENTIALS}" project_number "${GOOGLE_CLOUD_PROJECT:-}" 2>/dev/null || true
 fi
 
+# Optional: create the remote non-interactively using either service account or ADC
+echo "entrypoint.sh: Checking authentication method for rclone..."
+
+if [ -n "${GOOGLE_APPLICATION_CREDENTIALS:-}" ] && [ -f "${GOOGLE_APPLICATION_CREDENTIALS}" ]; then
+  echo "entrypoint.sh: Service account file found at ${GOOGLE_APPLICATION_CREDENTIALS}. Configuring rclone using service account..."
+  # Create remote using the service account file
+  rclone config create "${RCLONE_REMOTE}" gcs \
+    service_account_file "${GOOGLE_APPLICATION_CREDENTIALS}" \
+    project_number "${GOOGLE_CLOUD_PROJECT:-}" 2>/dev/null || true
+else
+  echo "entrypoint.sh: No service account credentials found. Falling back to Cloud Run Workload Identity (ADC)."
+  # Create remote using ADC / Workload Identity
+  rclone config create "${RCLONE_REMOTE}" gcs \
+    env_auth true \
+    project_number "${GOOGLE_CLOUD_PROJECT:-}" 2>/dev/null || true
+fi
+
+
 # Config (env)
 BUCKET_NAME="${BACKUP_BUCKET:-your-n8n-backups}"
 BACKUP_PREFIX="${BACKUP_PREFIX:-n8n-backups}"

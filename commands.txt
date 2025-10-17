@@ -1,0 +1,15 @@
+docker build -t n8n-custom:0.3 .
+docker run --rm -v $(pwd)/credentials.json:/home/node/credentials.json:ro --env-file .env --name n8n-custom-instance-3 n8n-custom:0.3
+
+docker build --no-cache -t n8n-custom:0.3 . && docker run --rm -v $(pwd)/credentials.json:/home/node/credentials.json:ro --env-file .env --name n8n-custom-instance-3 n8n-custom:0.3
+
+docker build --no-cache -t n8n-custom:0.3 . && docker run --rm -v $(pwd)/credentials.json:/home/node/credentials.json:ro --env-file .env -p 12345:5678 --name n8n-custom-instance-3 n8n-custom:0.3
+
+docker run --rm -it --entrypoint /bin/sh n8n-custom:0.3
+
+
+
+rclone config create n8n-gcs gcs service_account_file /Users/sharad/Documents/personal/deploy-n8n-google-cloud-run-sqlite-with-backups/credentials.json project_number try-out-gcp-features
+
+
+n8n-gcs:n8n-wf-backups/backups/

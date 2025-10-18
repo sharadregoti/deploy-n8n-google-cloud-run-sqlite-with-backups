@@ -31,6 +31,10 @@ upload_file() {
   rclone copyto "$src" "$latest" || echo "backup.sh: warning: failed to update latest pointer"
 }
 
+# Start backup after initial delay to allow n8n to start
+echo "backup.sh: initial sleep before starting backups (60s)..."
+sleep 60
+
 echo "backup.sh: backup loop starting (interval ${INTERVAL_SEC}s)"
 
 while [ "$STOP" = "0" ]; do
@@ -39,6 +43,10 @@ while [ "$STOP" = "0" ]; do
 
   WORKFLOW_FILE="${BACKUP_DIR}/workflows-${TIMESTAMP}.json"
   CRED_FILE="${BACKUP_DIR}/credentials-${TIMESTAMP}.json"
+
+  # Delete previous timestamp files
+  dest="${RCLONE_REMOTE}:${BUCKET_NAME}/${BACKUP_PREFIX}/"
+  rclone delete "$dest" --include "20**"
 
   # Export workflows (may fail if none exist)
   if n8n export:workflow --all --output="$WORKFLOW_FILE"; then

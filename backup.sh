@@ -23,7 +23,7 @@ upload_file() {
   # Upload to timestamped folder
   dest="${RCLONE_REMOTE}:${BUCKET_NAME}/${BACKUP_PREFIX}/${TIMESTAMP}/${base}"
   echo "backup.sh: uploading ${src} -> ${dest}"
-  rclone copyto "$src" "$dest" || echo "backup.sh: warning: failed to upload ${src}"
+  # rclone copyto "$src" "$dest" || echo "backup.sh: warning: failed to upload ${src}"
 
   # Update latest with non-timestamped name and force overwrite
   latest="${RCLONE_REMOTE}:${BUCKET_NAME}/${BACKUP_PREFIX}/latest/${base_no_timestamp}"
